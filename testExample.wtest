@@ -1,0 +1,91 @@
+import example.*
+
+describe "tests Music Guide - habilidades" {
+  test "Joaquín canta en el grupo Pimpinela. Queremos conocer su habilidad" {
+    assert.equals(25, joaquin.habilidad())
+  }
+
+  test "Joaquín decide lanzar su carrera solista (deja el grupo). Queremos conocer su habilidad" {
+    joaquin.abandonarGrupo()
+    assert.equals(20, joaquin.habilidad())
+  }
+
+  test "Lucía canta en el grupo Pimpinela. Queremos saber su habilidad" {
+    assert.equals(50, lucia.habilidad())
+  }
+
+  test "Lucía lanza su carrera solista (deja el grupo). Queremos conocer su habilidad" {
+    lucia.abandonarGrupo()
+    assert.equals(70, lucia.habilidad())
+  }
+
+  test "Luis Alberto toca con la Fender. Queremos saber su habilidad" {
+    assert.equals(80, luisAlberto.habilidad())
+  }
+
+  test "Luis Alberto toca ahora con la Gibson sana. Queremos saber su habilidad" {
+    luisAlberto.guitarra(gibson)
+    assert.equals(100, luisAlberto.habilidad())
+  }
+
+  test "Luis Alberto toca ahora con la Gibson rota. Queremos saber su habilidad" {
+    gibson.romper()
+    luisAlberto.guitarra(gibson)
+    assert.equals(40, luisAlberto.habilidad())
+  }
+
+}
+
+
+describe "Tests de Interpretación" {
+  const laFamilia = bardo.componer(264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
+  const cisne = bardo.componer(312, "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar")
+  test "Queremos saber si Joaquín interpreta bien la canción La Familia " {
+    assert.notThat(joaquin.interpretaBien(laFamilia))
+  }
+
+  test "Queremos saber si Joaquín interpreta bien la canción Cisne " {
+    assert.that(joaquin.interpretaBien(cisne))  
+  }
+
+  test "Queremos saber si Lucía interpreta bien la canción La Familia " {
+    assert.that(lucia.interpretaBien(laFamilia))
+  }
+
+  test "Queremos saber si Lucía interpreta bien la canción Cisne" {
+    assert.notThat(lucia.interpretaBien(cisne))
+  }
+
+  test "Queremos saber si Luis Alberto interpreta bien la canción La Familia" {
+    assert.that(luisAlberto.interpretaBien(laFamilia))
+  }
+  test "Queremos saber si Luis Alberto interpreta bien la canción Cisne" {
+    assert.that(luisAlberto.interpretaBien(cisne))
+  }
+}
+
+describe "Tests de presentaciones" {
+  const presentacionLunaPark = 
+         presentacionFactory.crear(new Date(year = 2021, month = 4, day = 20),
+                                lunaPark,
+                                #{luisAlberto, joaquin, lucia})
+
+  const presentacionLaTrastienda = 
+         presentacionFactory.crear(new Date(year = 2020, month = 11, day = 15),
+                                laTrastienda,
+                                #{luisAlberto, joaquin, lucia})
+  test "Queremos saber cuánto cobra Joaquín por la presentación del Luna Park" {
+    assert.equals(50, joaquin.cuantoCobra(presentacionLunaPark))
+  }
+
+  test "La Trastienda solo con Joaquín, termina cobrando 100" {
+    presentacionLaTrastienda.interpretes(#{joaquin})
+    assert.equals(100, joaquin.cuantoCobra(presentacionLaTrastienda))
+  }
+
+  test "Queremos saber la capacidad de La Trastienda para el 08 de agosto del 2020" {
+    //TODO change
+    assert.that(true)
+  }
+
+}
