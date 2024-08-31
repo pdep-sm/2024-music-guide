@@ -83,9 +83,37 @@ describe "Tests de presentaciones" {
     assert.equals(100, joaquin.cuantoCobra(presentacionLaTrastienda))
   }
 
-  test "Queremos saber la capacidad de La Trastienda para el 08 de agosto del 2020" {
-    //TODO change
-    assert.that(true)
+  test "La Trastienda para el 08 de agosto del 2020, tiene 700 de capacidad" {
+    const sabado = new Date(year=2020, month=8, day=8)
+    assert.equals(700, laTrastienda.capacidad(sabado))
   }
+
+  test "La Trastienda para el 05 de agosto del 2020, tiene 400 de capacidad" {
+    const notSabado = new Date(year=2020, month=8, day=5)
+    assert.equals(400, laTrastienda.capacidad(notSabado))
+  }
+
+  test "Lucía por la presentación del Luna Park cobra 500" {
+    assert.equals(500, lucia.cuantoCobra(presentacionLunaPark))
+  }
+
+  test "Lucía por la presentación de la Trastienda cobra 400" {
+    assert.equals(400, lucia.cuantoCobra(presentacionLaTrastienda))
+  }
+
+  test "Luis Alberto por la presentación del Luna Park cobra 1200" {
+    assert.equals(1200, luisAlberto.cuantoCobra(presentacionLunaPark))
+  }
+
+  test "Luis Alberto por la presentación de la Trastienda cobra 1000" {
+    assert.equals(1000, luisAlberto.cuantoCobra(presentacionLaTrastienda))
+  }
+
+  test "Costo de la presentación del Luna Park es de 1750" {
+    assert.equals(1750, presentacionLunaPark.costo())
+  } 
+  test "Costo de la presentación del Luna Park es de 1450" {
+    assert.equals(1450, presentacionLaTrastienda.costo())
+  } 
 
 }

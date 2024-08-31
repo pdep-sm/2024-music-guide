@@ -22,8 +22,6 @@ object lucia {
   const habilidadBase = 70
   var grupo = "Pimpinela"
   /*
-  interpreta bien unax canción que diga la palabra “familia” 
-  (sin importar mayúsculas o minúsculas)
   cobra 500 pesos la presentación si es en un lugar concurrido 
   (cuya capacidad es mayor a 5.000 personas) o 400 en caso contrario
   */
@@ -33,6 +31,8 @@ object lucia {
 
   method interpretaBien(cancion) = cancion.contieneFrase("familia")
 
+  method cuantoCobra(presentacion) = if (presentacion.enLugarConcurrido()) 500 else 400
+
   method abandonarGrupo() {
     grupo = ""
   }
@@ -41,11 +41,13 @@ object lucia {
 
 object luisAlberto {
   var guitarra = fender
+  const fechaLimite = new Date(year=2020, month=12, day=1)
   /*
   cobra 1.000 pesos por presentación hasta Noviembre del 2020, después cobra $ 1.200
   */
   method habilidad() = (8 * guitarra.valor()).min(100)
   method interpretaBien(cancion) = true
+  method cuantoCobra(presentacion) = if (presentacion.esAntesDe(fechaLimite)) 1000 else 1200
   method guitarra(nuevaGuitarra) {
     guitarra = nuevaGuitarra
   }
@@ -81,6 +83,12 @@ object presentacionFactory {
 
       method tocaSolo(interprete) = #{interprete} == interpretes
 
+      method enLugarConcurrido() = lugar.capacidad(fecha) > 5000
+
+      method esAntesDe(unaFecha) = fecha < unaFecha
+
+      method costo() = interpretes.sum{ interprete => interprete.cuantoCobra(self)}
+
       method interpretes(nuevosInterpretes) {
         interpretes = nuevosInterpretes
       } 
@@ -96,6 +104,10 @@ object lunaPark {
 
 object laTrastienda {
 
-  method capacidad(fecha) = 400 //400 o 400 + 300 ?
-  
+  const capacidadBase = 400
+
+  method capacidad(fecha) = capacidadBase + self.extraPorFecha(fecha) 
+
+  method extraPorFecha(fecha) = if (fecha.dayOfWeek()=="saturday") 300 else 0
+
 }
