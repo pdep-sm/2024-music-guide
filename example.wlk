@@ -1,43 +1,39 @@
-object joaquin {
+// Iteracion 2
+class MusicoDeGrupo {
+  const property aumentoHabilidadEnGrupo
 
-  const habilidadBase = 20
-  var grupo = "Pimpinela"
-
-  method habilidad() = if (self.estaEnGrupo()) habilidadBase + 5 else habilidadBase
-
-  method estaEnGrupo() = not grupo.isEmpty()
-
+  method diferenciaDeHabilidad() = self.aumentoHabilidadEnGrupo()
   method interpretaBien(cancion) = cancion.duracion() > 300
-
-  method cuantoCobra(presentacion) = if (presentacion.tocaSolo(self)) 100 else 50
-
-  method abandonarGrupo() {
-    grupo = ""
-  }
-
+  method cuantoCobra(presentacion, musico) = if (presentacion.tocaSolo(musico)) 100 else 50
 }
 
-object lucia {
+class MusicoVocalistaPopular {
+  const palabraClave
+  const property diferenciaDeHabilidad = -20
 
-  const habilidadBase = 70
-  var grupo = "Pimpinela"
-  /*
-  cobra 500 pesos la presentación si es en un lugar concurrido 
-  (cuya capacidad es mayor a 5.000 personas) o 400 en caso contrario
-  */
-  method habilidad() = if (self.estaEnGrupo()) habilidadBase - 20 else habilidadBase
+  method interpretaBien(cancion) = cancion.contieneFrase(palabraClave)
+  method cuantoCobra(presentacion, musico) = if (presentacion.enLugarConcurrido()) 500 else 400
+}
+
+class Musico {
+  var habilidadBase
+  var estiloDeMusico
+  const albumes = #{}
+  var grupo
+
+  method habilidad() = 
+    if (self.estaEnGrupo()) habilidadBase + estiloDeMusico.diferenciaDeHabilidad() 
+    else habilidadBase
 
   method estaEnGrupo() = not grupo.isEmpty()
-
-  method interpretaBien(cancion) = cancion.contieneFrase("familia")
-
-  method cuantoCobra(presentacion) = if (presentacion.enLugarConcurrido()) 500 else 400
-
   method abandonarGrupo() {
     grupo = ""
   }
-
+  method interpretaBien(cancion) = estiloDeMusico.interpretaBien(cancion)
+  method cuantoCobra(presentacion) = estiloDeMusico.cuantoCobra(presentacion, self)
 }
+
+// Iteracion 1
 
 object luisAlberto {
   var guitarra = fender
@@ -87,7 +83,9 @@ object presentacionFactory {
 
       method esAntesDe(unaFecha) = fecha < unaFecha
 
-      method costo() = interpretes.sum{ interprete => interprete.cuantoCobra(self)}
+      method costo() = interpretes.sum{ 
+        interprete => interprete.cuantoCobra(self)
+      }
 
       method interpretes(nuevosInterpretes) {
         interpretes = nuevosInterpretes

@@ -1,6 +1,23 @@
 import example.*
 
+const joaquin = new Musico(
+  habilidadBase = 20,
+  grupo = "Pimpinela",
+  estiloDeMusico = new MusicoDeGrupo(
+    aumentoHabilidadEnGrupo = 5
+  )
+)
+
+const lucia = new Musico(
+  habilidadBase = 70,
+  grupo = "Pimpinela",
+  estiloDeMusico = new MusicoVocalistaPopular(
+    palabraClave = "familia"
+  )
+)
+
 describe "tests Music Guide - habilidades" {
+
   test "Joaquín canta en el grupo Pimpinela. Queremos conocer su habilidad" {
     assert.equals(25, joaquin.habilidad())
   }
