@@ -1,19 +1,16 @@
 import example.*
 
-const joaquin = new Musico(
+const joaquin = new MusicoDeGrupo(
   habilidadBase = 20,
   grupo = "Pimpinela",
-  estiloDeMusico = new MusicoDeGrupo(
-    aumentoHabilidadEnGrupo = 5
-  )
+  //aumentoHabilidadEnGrupo = 5,
+  diferenciaDeHabilidad = 5
 )
 
-const lucia = new Musico(
+const lucia = new MusicoVocalistaPopular(
   habilidadBase = 70,
   grupo = "Pimpinela",
-  estiloDeMusico = new MusicoVocalistaPopular(
-    palabraClave = "familia"
-  )
+  palabraClave = "familia"
 )
 
 describe "tests Music Guide - habilidades" {
@@ -55,8 +52,17 @@ describe "tests Music Guide - habilidades" {
 
 
 describe "Tests de Interpretación" {
-  const laFamilia = bardo.componer(264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
-  const cisne = bardo.componer(312, "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar")
+  const laFamilia = 
+    new Cancion(
+      duracion = 264,
+      letra = "Quiero brindar por mi gente sencilla, por el amor brindo por la familia",
+      autor = lucia)
+  const cisne = 
+    new Cancion(
+      duracion = 312,
+      letra = "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar",
+      autor = luisAlberto)
+      
   test "Queremos saber si Joaquín interpreta bien la canción La Familia " {
     assert.notThat(joaquin.interpretaBien(laFamilia))
   }
@@ -83,14 +89,17 @@ describe "Tests de Interpretación" {
 
 describe "Tests de presentaciones" {
   const presentacionLunaPark = 
-         presentacionFactory.crear(new Date(year = 2021, month = 4, day = 20),
-                                lunaPark,
-                                #{luisAlberto, joaquin, lucia})
+    new Presentacion(
+      fecha = new Date(year = 2021, month = 4, day = 20),
+      lugar = lunaPark,
+      interpretes = #{luisAlberto, joaquin, lucia})
 
-  const presentacionLaTrastienda = 
-         presentacionFactory.crear(new Date(year = 2020, month = 11, day = 15),
-                                laTrastienda,
-                                #{luisAlberto, joaquin, lucia})
+  const presentacionLaTrastienda =  
+    new Presentacion(
+      fecha = new Date(year = 2020, month = 11, day = 15),
+      lugar = laTrastienda,
+      interpretes = #{luisAlberto, joaquin, lucia})
+
   test "Queremos saber cuánto cobra Joaquín por la presentación del Luna Park" {
     assert.equals(50, joaquin.cuantoCobra(presentacionLunaPark))
   }

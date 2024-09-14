@@ -1,49 +1,57 @@
-// Iteracion 2
-class MusicoDeGrupo {
-  const property aumentoHabilidadEnGrupo
-
-  method diferenciaDeHabilidad() = self.aumentoHabilidadEnGrupo()
-  method interpretaBien(cancion) = cancion.duracion() > 300
-  method cuantoCobra(presentacion, musico) = if (presentacion.tocaSolo(musico)) 100 else 50
-}
-
-class MusicoVocalistaPopular {
-  const palabraClave
-  const property diferenciaDeHabilidad = -20
-
-  method interpretaBien(cancion) = cancion.contieneFrase(palabraClave)
-  method cuantoCobra(presentacion, musico) = if (presentacion.enLugarConcurrido()) 500 else 400
-}
-
 class Musico {
-  var habilidadBase
-  var estiloDeMusico
-  const albumes = #{}
-  var grupo
+  const habilidadBase
+  const property albumes = #{}
+  var property grupo
+  const property diferenciaDeHabilidad  
 
   method habilidad() = 
-    if (self.estaEnGrupo()) habilidadBase + estiloDeMusico.diferenciaDeHabilidad() 
+    if (self.estaEnGrupo()) habilidadBase + self.diferenciaDeHabilidad() 
     else habilidadBase
+  /*
+  Todos los músicos interpretan bien las canciones de su autoría
+  Todos los músicos con habilidad mayor a 60 ejecutan bien cualquier canción
+  */
+  method interpretaBien(cancion) = self.esAutorDe(cancion) or self.esMuyHabil()
+
+  method esAutorDe(cancion) = cancion.autor() == self
+  method esMuyHabil() = self.habilidad() > musico.habilidadOptima()
+  
+  method cuantoCobra(presentacion) 
 
   method estaEnGrupo() = not grupo.isEmpty()
   method abandonarGrupo() {
     grupo = ""
   }
-  method interpretaBien(cancion) = estiloDeMusico.interpretaBien(cancion)
-  method cuantoCobra(presentacion) = estiloDeMusico.cuantoCobra(presentacion, self)
 }
+object musico {
+  var property habilidadOptima = 60
+}
+
+class MusicoDeGrupo inherits Musico {
+  override method interpretaBien(cancion) = 
+    super(cancion) or cancion.duracion() > 300
+  override method cuantoCobra(presentacion) = if (presentacion.tocaSolo(self)) 100 else 50
+}
+
+class MusicoVocalistaPopular inherits Musico(diferenciaDeHabilidad = -20) {
+  const palabraClave
+
+  override method interpretaBien(cancion) = cancion.contieneFrase(palabraClave)
+  override method cuantoCobra(presentacion) = if (presentacion.enLugarConcurrido()) 500 else 400
+}
+
 
 // Iteracion 1
 
-object luisAlberto {
+object luisAlberto inherits Musico(habilidadBase = 8, grupo = "", diferenciaDeHabilidad = 0){
   var guitarra = fender
   const fechaLimite = new Date(year=2020, month=12, day=1)
   /*
   cobra 1.000 pesos por presentación hasta Noviembre del 2020, después cobra $ 1.200
   */
-  method habilidad() = (8 * guitarra.valor()).min(100)
-  method interpretaBien(cancion) = true
-  method cuantoCobra(presentacion) = if (presentacion.esAntesDe(fechaLimite)) 1000 else 1200
+  override method habilidad() = (habilidadBase * guitarra.valor()).min(100)
+  override method interpretaBien(cancion) = true
+  override method cuantoCobra(presentacion) = if (presentacion.esAntesDe(fechaLimite)) 1000 else 1200
   method guitarra(nuevaGuitarra) {
     guitarra = nuevaGuitarra
   }
@@ -60,52 +68,41 @@ object gibson {
   }
 }
 
-object bardo {
-  method componer(duracion, unaLetra) = 
-    object {
-        const letra = unaLetra
-        method duracion() = duracion
-        method contieneFrase(frase) = letra.toLowerCase().contains(frase.toLowerCase())
-    }
-} 
+class Cancion {
+  const letra
+  const property duracion
+  const property autor
 
-object presentacionFactory {
+  method contieneFrase(frase) = letra.toLowerCase().contains(frase.toLowerCase())
+}
 
-  method crear(unaFecha, unLugar, unosInterpretes) = 
-    object {
-      const fecha = unaFecha
-      const lugar = unLugar
-      var interpretes = unosInterpretes
+class Presentacion {
+  const fecha
+  const lugar
+  var interpretes
 
-      method tocaSolo(interprete) = #{interprete} == interpretes
+  method tocaSolo(interprete) = #{interprete} == interpretes
 
-      method enLugarConcurrido() = lugar.capacidad(fecha) > 5000
+  method enLugarConcurrido() = lugar.capacidad(fecha) > 5000
 
-      method esAntesDe(unaFecha) = fecha < unaFecha
+  method esAntesDe(unaFecha) = fecha < unaFecha
 
-      method costo() = interpretes.sum{ 
-        interprete => interprete.cuantoCobra(self)
-      }
+  method costo() = interpretes.sum{ 
+    interprete => interprete.cuantoCobra(self)
+  }
 
-      method interpretes(nuevosInterpretes) {
-        interpretes = nuevosInterpretes
-      } 
-    }
-
+  method interpretes(nuevosInterpretes) {
+    interpretes = nuevosInterpretes
+  } 
 }
 
 object lunaPark {
-
   method capacidad(fecha) = 9290
-
 }
 
 object laTrastienda {
-
   const capacidadBase = 400
 
   method capacidad(fecha) = capacidadBase + self.extraPorFecha(fecha) 
-
   method extraPorFecha(fecha) = if (fecha.dayOfWeek()=="saturday") 300 else 0
-
 }
